@@ -9,11 +9,17 @@ import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
+
+/**
+ * 
+ * @author ztarbug
+ *
+ */
 public class ConfigData extends Properties {
 	
-	private static ConfigData instance;
-
 	private static final long serialVersionUID = 1L;
+	
+	private static ConfigData instance;
 	
 	private List<String> attributeNames; 
 	

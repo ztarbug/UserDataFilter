@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
  * TODO
  * * extract user ID from session
  * 
- * @author VWTDZWZ
+ * @author ztarbug
  *
  */
 public class UserDataFilter implements Filter {
@@ -71,10 +71,9 @@ public class UserDataFilter implements Filter {
 		
 		if (data == null) {
 			//String loggedInUser = request.getUserPrincipal().getName();
-			//String loggedInUser = "VWTDZWZ";
 			String loggedInUser = "fe_user";
 			
-			ActiveDirectoryDataRequester dataRequester = new ActiveDirectoryDataRequester(ctx);
+			UserDirectoryDataRequester dataRequester = new UserDirectoryDataRequester(ctx);
 			Map<String, String> userData = dataRequester.getUserData(loggedInUser);
 			session.setAttribute(ATTRIBUTE_NAME, userData);
 			if (userData.size() > 0 ) {

@@ -11,6 +11,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+
+/**
+ * 
+ * @author ztarbug
+ *
+ */
 @WebServlet("/GetUserData")
 public class UserDataServlet extends HttpServlet {
 
