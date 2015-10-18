@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
+import org.apache.log4j.Logger;
+
 
 /**
  * 
@@ -21,7 +23,9 @@ public class ConfigData extends Properties {
 	
 	private static ConfigData instance;
 	
-	private List<String> attributeNames; 
+	private List<String> attributeNames;
+	
+	private Logger log = Logger.getLogger(ConfigData.class);
 	
 	public static ConfigData getInstance() {
 		if(instance == null) {
@@ -39,9 +43,9 @@ public class ConfigData extends Properties {
 			input = new FileInputStream(filename);
 			load(input);
 		} catch (FileNotFoundException e) {
-			// prop file not found
+			log.error("Could not find property file - Filter will not work!");
 		} catch (IOException e) {
-			// couldn't read from property file
+			log.error("couldn't read from property file - Filter will not work!");
 		}
 		
 		attributeNames = new ArrayList<String>();

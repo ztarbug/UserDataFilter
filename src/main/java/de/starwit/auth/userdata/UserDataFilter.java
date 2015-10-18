@@ -70,8 +70,8 @@ public class UserDataFilter implements Filter {
 		Object data = session.getAttribute(ATTRIBUTE_NAME);
 		
 		if (data == null) {
-			//String loggedInUser = request.getUserPrincipal().getName();
-			String loggedInUser = "fe_user";
+			String loggedInUser = request.getUserPrincipal().getName();
+			//String loggedInUser = "fe_user";
 			
 			UserDirectoryDataRequester dataRequester = new UserDirectoryDataRequester(ctx);
 			Map<String, String> userData = dataRequester.getUserData(loggedInUser);
