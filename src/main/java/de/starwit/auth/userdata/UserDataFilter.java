@@ -70,17 +70,22 @@ public class UserDataFilter implements Filter {
 		Object data = session.getAttribute(ATTRIBUTE_NAME);
 		
 		if (data == null) {
-			String loggedInUser = request.getUserPrincipal().getName();
-			//String loggedInUser = "fe_user";
+			if (request.getUserPrincipal() != null) {
+				String loggedInUser = request.getUserPrincipal().getName();
+	
+				UserDirectoryDataRequester dataRequester = new UserDirectoryDataRequester(ctx);
+				Map<String, String> userData = dataRequester.getUserData(loggedInUser);
+				session.setAttribute(ATTRIBUTE_NAME, userData);
 			
-			UserDirectoryDataRequester dataRequester = new UserDirectoryDataRequester(ctx);
-			Map<String, String> userData = dataRequester.getUserData(loggedInUser);
-			session.setAttribute(ATTRIBUTE_NAME, userData);
-			if (userData.size() > 0 ) {
-				log.debug("loaded user data to session");
+				if (userData.size() > 0 ) {
+					log.debug("loaded user data to session");
+				} else {
+					log.warn("no data for user " + loggedInUser + " could be loaded from directory - empty data set on session");
+				}
 			} else {
-				log.warn("no data for user " + loggedInUser + " could be loaded from directory - empty data set on session");
+				log.warn("No logged in user found, please use UserDataFilter only on context paths with forced login.");
 			}
+
 			
 		} // nothing to to do if data is present - therefore no else
 		
