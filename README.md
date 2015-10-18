@@ -27,6 +27,7 @@ Configuration in web.xml
 In you app servers base folder you need to have a file called userDirectoryConnection.properties within 
 a folder called "conf".
 Sample props file for accessing an apacheds server. An example schema can be found a https://github.com/ztarbug/apacheds-embedded/blob/master/starwit.ldif
+```properties
 # network url of directory
 directory.url=ldap://localhost:10389
 # credentials to access directory
@@ -39,3 +40,4 @@ directory.searchFilter=(&(objectclass=person)(uid=###USER_NAME###))
 
 # attributes per user to be read from directory
 attributes=cn,sn,uid
+```
