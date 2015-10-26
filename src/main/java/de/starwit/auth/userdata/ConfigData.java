@@ -29,7 +29,7 @@ public class ConfigData extends Properties {
 	
 	public static ConfigData getInstance() {
 		if(instance == null) {
-			instance = new ConfigData("conf/userDirectoryConnection.properties");
+			instance = new ConfigData("userDirectoryConnection.properties");
 		}
 		
 		return instance;
@@ -40,10 +40,11 @@ public class ConfigData extends Properties {
 		InputStream input = null;
 		
 		try {
-			input = new FileInputStream(filename);
+			String ldapConfigPath = System.getProperty("ldap.config.path");
+			input = new FileInputStream(ldapConfigPath + "/userDirectoryConnection.properties");
 			load(input);
 		} catch (FileNotFoundException e) {
-			log.error("Could not find property file - Filter will not work!");
+			log.error("Could not find property file - Filter will not work! " + e.getMessage());
 		} catch (IOException e) {
 			log.error("couldn't read from property file - Filter will not work!");
 		}
