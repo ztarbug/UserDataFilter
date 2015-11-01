@@ -21,27 +21,39 @@ public class ConfigData extends Properties {
 	
 	private static final long serialVersionUID = 1L;
 	
+	/**
+	 * the single instance
+	 */
 	private static ConfigData instance;
 	
+	/**
+	 * attributes to be extracted from user directory
+	 */
 	private List<String> attributeNames;
+	
+	/**
+	 * default config file name...
+	 */
+	private static final String configFileName = "userDirectoryConnection.properties";
 	
 	private Logger log = Logger.getLogger(ConfigData.class);
 	
 	public static ConfigData getInstance() {
 		if(instance == null) {
-			instance = new ConfigData("userDirectoryConnection.properties");
+			instance = new ConfigData();
 		}
 		
 		return instance;
 	}
 	
-	private ConfigData(String filename) {
+	private ConfigData() {
+		
+		String configFilePath = computeConfigFilePath();
 		
 		InputStream input = null;
-		
+			
 		try {
-			String ldapConfigPath = System.getProperty("ldap.config.path");
-			input = new FileInputStream(ldapConfigPath + "/userDirectoryConnection.properties");
+			input = new FileInputStream(configFilePath);
 			load(input);
 		} catch (FileNotFoundException e) {
 			log.error("Could not find property file - Filter will not work! " + e.getMessage());
@@ -56,6 +68,16 @@ public class ConfigData extends Properties {
 			String attrName = (String) st.nextElement();
 			attributeNames.add(attrName);
 		}
+	}
+	
+	private String computeConfigFilePath() {
+		String configFilePath = System.getProperty("starwit.userdata.configfile");
+		if (configFilePath == null || "".equals(configFilePath)) {
+			log.warn("no path to config file provided, try to load default filename " + configFileName + " from execution path - this should be configured explicitly!");
+			configFilePath = configFileName;
+		}
+		
+		return configFilePath;
 	}
 
 	public List<String> getAttributeNames() {

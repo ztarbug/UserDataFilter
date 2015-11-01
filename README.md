@@ -3,6 +3,14 @@ Implements a Servlet filter to query LDAP/AD and put various user data on HTTP s
 this module assumes that you have an authentication mechanism in place and there is a valid UserPrincipal 
 on a users session. Based on that principal name configured directory server is queried.
 
+## What does it do
+Module consists of two main elements. The servlet filter gets alias of currently logged in user and retrieves
+from configured user directory additional data. Those date are then pushed to user's session.
+Second component is a servlet (context path *GetUserData*) that delivers retrieved user data as a JSON object.
+Your application's frontend technology can then use that data to display a user's details.
+
+## How to configure
+
 Just add this module to your pom.xml
 
 		<dependency>
@@ -24,8 +32,10 @@ Configuration in web.xml
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
-In you app servers base folder you need to have a file called userDirectoryConnection.properties within 
-a folder called "conf".
+User needs to come from somewhere, so this module expects a configuration file that contains all necessary
+data to access and search users in an LDAP directory. Location of that configuration file has to be provided
+as a JVM parameter like so ```-Dstarwit.userdata.configfile=conf/userDirectoryConnection.properties```
+
 Sample props file for accessing an apacheds server. An example schema can be found a https://github.com/ztarbug/apacheds-embedded/blob/master/starwit.ldif
 ```properties
 # network url of directory
