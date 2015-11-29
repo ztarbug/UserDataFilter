@@ -44,7 +44,6 @@ public class UserDirectoryDataRequester {
         try {
         	NamingEnumeration<SearchResult> results = ctx.search(base, filter, sc);
 			Map<String, String> userData = extractUserData(results);
-			userData.put("alias", loggedInUser);
 			return userData;
 		} catch (NamingException e) {
 			log.error("try to query user directory, returned empty data set. Filter used: " + filter);

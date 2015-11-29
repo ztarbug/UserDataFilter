@@ -35,6 +35,10 @@ public class UserDataFilter implements Filter {
 	private Logger log = Logger.getLogger(UserDataFilter.class);
 	
 	public void init(FilterConfig filterConfig) throws ServletException {
+	
+	}
+
+	private void getDirContext() {
 		BasicConfigurator.configure();
 		log.debug("UserDataFilter init");
 		
@@ -63,7 +67,6 @@ public class UserDataFilter implements Filter {
 
 	public void doFilter(ServletRequest req, ServletResponse resp,
 			FilterChain chain) throws IOException, ServletException {
-		
 		log.debug("UserDataFilter called, check if user data is already present on session");
 		HttpServletRequest request = (HttpServletRequest) req;
 		HttpSession session = request.getSession();
@@ -71,13 +74,15 @@ public class UserDataFilter implements Filter {
 		
 		if (data == null) {
 			if (request.getUserPrincipal() != null) {
+				getDirContext();
 				String loggedInUser = request.getUserPrincipal().getName();
 	
 				UserDirectoryDataRequester dataRequester = new UserDirectoryDataRequester(ctx);
 				Map<String, String> userData = dataRequester.getUserData(loggedInUser);
+				userData.put("alias", loggedInUser);
 				session.setAttribute(ATTRIBUTE_NAME, userData);
 			
-				if (userData.size() > 0 ) {
+				if (userData.size() > 1 ) {
 					log.debug("loaded user data to session");
 				} else {
 					log.warn("no data for user " + loggedInUser + " could be loaded from directory - empty data set on session");
