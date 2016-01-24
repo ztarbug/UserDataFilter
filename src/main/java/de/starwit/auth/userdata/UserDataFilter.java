@@ -1,6 +1,7 @@
 package de.starwit.auth.userdata;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -30,7 +31,6 @@ import org.apache.log4j.Logger;
 public class UserDataFilter implements Filter {
 	
 	final String ATTRIBUTE_NAME = "de.starwit.auth.userdata";
-	private DirContext ctx;
 	
 	private Logger log = Logger.getLogger(UserDataFilter.class);
 	
@@ -38,7 +38,8 @@ public class UserDataFilter implements Filter {
 	
 	}
 
-	private void getDirContext() {
+	private DirContext getDirContext() {
+		DirContext ctx;
 		BasicConfigurator.configure();
 		log.debug("UserDataFilter init");
 		
@@ -54,7 +55,7 @@ public class UserDataFilter implements Filter {
 		env.put(Context.SECURITY_PRINCIPAL, username);
 		
 		try {
-			ctx = new InitialDirContext(env);
+			return new InitialDirContext(env);
 		} catch (NamingException e) {
 			// panic no connection to directory!
 			log.error("Could not reach user directory " + 
@@ -62,6 +63,7 @@ public class UserDataFilter implements Filter {
 					" with error " + 
 					e.getMessage() + " " + 
 					e.getExplanation());
+			return null;
 		}
 	}
 
@@ -71,14 +73,16 @@ public class UserDataFilter implements Filter {
 		HttpServletRequest request = (HttpServletRequest) req;
 		HttpSession session = request.getSession();
 		Object data = session.getAttribute(ATTRIBUTE_NAME);
+		Map<String, String> userData = new HashMap<String, String>();
 		
 		if (data == null) {
 			if (request.getUserPrincipal() != null) {
-				getDirContext();
+				DirContext ctx = getDirContext();
 				String loggedInUser = request.getUserPrincipal().getName();
-	
-				UserDirectoryDataRequester dataRequester = new UserDirectoryDataRequester(ctx);
-				Map<String, String> userData = dataRequester.getUserData(loggedInUser);
+				if (ctx != null) {
+					UserDirectoryDataRequester dataRequester = new UserDirectoryDataRequester(ctx);
+					userData = dataRequester.getUserData(loggedInUser);
+				}
 				userData.put("alias", loggedInUser);
 				session.setAttribute(ATTRIBUTE_NAME, userData);
 			
